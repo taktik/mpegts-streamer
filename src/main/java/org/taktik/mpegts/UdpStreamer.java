@@ -5,10 +5,11 @@ import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 import org.jcodec.common.NIOUtils;
-import org.jcodec.common.SeekableByteChannel;
 import org.jcodec.containers.mps.MTSUtils;
+import org.jcodec.containers.mps.psi.PMTSection;
 
 public class UdpStreamer {
 	public static final int MPEGTS_PACKET_SIZE = 188;
@@ -34,11 +35,11 @@ public class UdpStreamer {
 			// Get file and inputStream
 			String filePath = filePaths[f];
 			File file = new File(filePath);
-			SeekableByteChannel channel = NIOUtils.autoChannel(file);
+			FileChannel channel = FileChannel.open(file.toPath());
 
 			MTSUtils.PMTExtractor pmtExtractor = new MTSUtils.PMTExtractor();
 			pmtExtractor.readTsFile(channel);
-			MTSUtils.PMT pmt = pmtExtractor.getPmt();
+			PMTSection pmt = pmtExtractor.getPmt();
 
 			// Fill the buffer with some data
 			MpegTsPacket mtsPacket;
