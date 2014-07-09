@@ -3,9 +3,12 @@ package org.taktik.mpegts;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.ByteChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
+
+import com.google.common.io.ByteSource;
 
 public class MTSSources {
 	public static MTSSource fromSources(MTSSource... sources) {
@@ -37,6 +40,18 @@ public class MTSSources {
 				.build();
 	}
 
+	public static ResettableMTSSource from(ByteSource byteSource) throws IOException {
+		return ByteSourceMTSSource.builder()
+				.setByteSource(byteSource)
+				.build();
+	}
+
+	public static MTSSource from(InputStream inputStream) throws IOException {
+		return InputStreamMTSSource.builder()
+				.setInputStream(inputStream)
+				.build();
+	}
+
 	public static MTSSource loop(ResettableMTSSource source) {
 		return LoopingMTSSource.builder()
 				.setSource(source)
@@ -49,4 +64,5 @@ public class MTSSources {
 				.setMaxLoops(maxLoops)
 				.build();
 	}
+
 }

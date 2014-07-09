@@ -43,7 +43,7 @@ public class StreamerTest {
 
 		// build streamer
 		Streamer streamer = Streamer.builder()
-				.setSource(MTSSources.loop(media123))
+				.setSource(source)
 				.setSink(transport)
 				.build();
 
