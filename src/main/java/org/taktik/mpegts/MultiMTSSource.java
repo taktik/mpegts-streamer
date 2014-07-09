@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -25,10 +24,7 @@ public class MultiMTSSource implements MTSSource {
 
 	private Map<Integer,MTSPacket> lastPacketsOfPreviousSource = Maps.newHashMap();
 	private Map<Integer,MTSPacket> firstPacketsOfCurrentSource = Maps.newHashMap();
-	private Map<Integer, Integer> continuityFixes = Maps.newHashMap();;
-
-
-	private Queue<MTSPacket> queue = Lists.newLinkedList();
+	private Map<Integer, Integer> continuityFixes = Maps.newHashMap();
 
 	protected MultiMTSSource(boolean fixContinuity, MTSSource... sources) {
 		this.sources = sources;
@@ -60,9 +56,6 @@ public class MultiMTSSource implements MTSSource {
 
 	@Override
 	public MTSPacket nextPacket() throws Exception {
-		if (!queue.isEmpty()) {
-			return queue.remove();
-		}
 		if (idx >= sources.length) {
 			return null;
 		}
