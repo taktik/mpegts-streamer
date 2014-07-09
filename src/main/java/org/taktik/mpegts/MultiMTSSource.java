@@ -94,7 +94,8 @@ public class MultiMTSSource implements MTSSource {
 		if (!firstPacketsOfCurrentSource.containsKey(pid)) {
 			firstPacketsOfCurrentSource.put(pid, tsPacket);
 			if (idx > 0) {
-				int continuityFix = lastPacketsOfPreviousSource.get(pid).getContinuityCounter() - tsPacket.getContinuityCounter();
+				MTSPacket lastPacketOfPreviousSource = lastPacketsOfPreviousSource.get(pid);
+				int continuityFix = lastPacketOfPreviousSource == null ? 0 : lastPacketOfPreviousSource.getContinuityCounter() - tsPacket.getContinuityCounter();
 				if (tsPacket.isContainsPayload()) {
 					continuityFix++;
 				}
@@ -115,7 +116,11 @@ public class MultiMTSSource implements MTSSource {
 						firstPTSsOfCurrentSource.put(pid, pts);
 					}
 					if (idx > 0) {
-						long newPts = lastPTSsOfPreviousSource.get(pid) + (pts - firstPTSsOfCurrentSource.get(pid));// + 70 * ((27000000 / 300) / 1000);
+						Long lastPTSOfPreviousSource = lastPTSsOfPreviousSource.get(pid);
+						if (lastPTSOfPreviousSource == null) {
+							lastPTSOfPreviousSource = 0l;
+						}
+						long newPts = lastPTSOfPreviousSource + (pts - firstPTSsOfCurrentSource.get(pid));// + 70 * ((27000000 / 300) / 1000);
 
 						payload.put(9, (byte) (0x20 | ((newPts & 0x1C0000000l) >> 29) | 0x1));
 						payload.putShort(10, (short) (0x1 | ((newPts & 0x3FFF8000) >> 14)));
@@ -147,6 +152,9 @@ public class MultiMTSSource implements MTSSource {
 			return;
 		}
 		Long lastPCROfPreviousSource = lastPCRsOfPreviousSource.get(tsPacket.getPid());
+		if (lastPCROfPreviousSource == null) {
+			lastPCROfPreviousSource = 0l;
+		}
 		Long firstPCROfCurrentSource = firstPCRsOfCurrentSource.get(tsPacket.getPid());
 		long pcr = tsPacket.getAdaptationField().getPcr().getValue();
 
