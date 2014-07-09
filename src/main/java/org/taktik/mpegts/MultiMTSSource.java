@@ -14,13 +14,13 @@ public class MultiMTSSource implements MTSSource {
 	private MTSSource[] sources;
 	int idx = 0;
 
-	private Map<Integer,MTSPacket> pcrPackets = Maps.newHashMap();
-	private Map<Integer,MTSPacket> allPackets = Maps.newHashMap();
-	private Map<Integer,Long> ptss = Maps.newHashMap();
-	private Map<Integer,Long> lastPTSsOfPreviousSource = Maps.newHashMap();
-	private Map<Integer,Long> lastPCRsOfPreviousSource = Maps.newHashMap();
-	private Map<Integer,Long> firstPCRsOfCurrentSource = Maps.newHashMap();
-	private Map<Integer,Long> firstPTSsOfCurrentSource = Maps.newHashMap();
+	private Map<Integer,MTSPacket> pcrPackets;
+	private Map<Integer,MTSPacket> allPackets;
+	private Map<Integer,Long> ptss;
+	private Map<Integer,Long> lastPTSsOfPreviousSource;
+	private Map<Integer,Long> lastPCRsOfPreviousSource;
+	private Map<Integer,Long> firstPCRsOfCurrentSource;
+	private Map<Integer,Long> firstPTSsOfCurrentSource;
 
 	private Map<Integer,MTSPacket> lastPacketsOfPreviousSource = Maps.newHashMap();
 	private Map<Integer,MTSPacket> firstPacketsOfCurrentSource = Maps.newHashMap();
@@ -29,29 +29,23 @@ public class MultiMTSSource implements MTSSource {
 	protected MultiMTSSource(boolean fixContinuity, MTSSource... sources) {
 		this.sources = sources;
 		this.fixContinuity = fixContinuity;
+		if (fixContinuity) {
+			 pcrPackets = Maps.newHashMap();
+			allPackets = Maps.newHashMap();
+			ptss = Maps.newHashMap();
+			lastPTSsOfPreviousSource = Maps.newHashMap();
+			lastPCRsOfPreviousSource = Maps.newHashMap();
+			firstPCRsOfCurrentSource = Maps.newHashMap();
+			firstPTSsOfCurrentSource = Maps.newHashMap();
+
+			lastPacketsOfPreviousSource = Maps.newHashMap();
+			firstPacketsOfCurrentSource = Maps.newHashMap();
+			continuityFixes = Maps.newHashMap();
+		}
 	}
 
 	protected MultiMTSSource(boolean fixContinuity, Collection<MTSSource> sources) {
 		this(fixContinuity, sources.toArray(new MTSSource[sources.size()]));
-	}
-
-	private void switchSource() {
-		if (fixContinuity) {
-			firstPCRsOfCurrentSource.clear();
-			lastPCRsOfPreviousSource.clear();
-			firstPTSsOfCurrentSource.clear();
-			lastPTSsOfPreviousSource.clear();
-			firstPacketsOfCurrentSource.clear();
-			lastPacketsOfPreviousSource.clear();
-			for (MTSPacket mtsPacket : pcrPackets.values()) {
-				lastPCRsOfPreviousSource.put(mtsPacket.getPid(), mtsPacket.getAdaptationField().getPcr().getValue());
-			}
-			lastPTSsOfPreviousSource.putAll(ptss);
-			lastPacketsOfPreviousSource.putAll(allPackets);
-			pcrPackets.clear();
-			ptss.clear();
-			allPackets.clear();
-		}
 	}
 
 	@Override
@@ -72,6 +66,25 @@ public class MultiMTSSource implements MTSSource {
 			}
 
 			return nextPacket();
+		}
+	}
+
+	private void switchSource() {
+		if (fixContinuity) {
+			firstPCRsOfCurrentSource.clear();
+			lastPCRsOfPreviousSource.clear();
+			firstPTSsOfCurrentSource.clear();
+			lastPTSsOfPreviousSource.clear();
+			firstPacketsOfCurrentSource.clear();
+			lastPacketsOfPreviousSource.clear();
+			for (MTSPacket mtsPacket : pcrPackets.values()) {
+				lastPCRsOfPreviousSource.put(mtsPacket.getPid(), mtsPacket.getAdaptationField().getPcr().getValue());
+			}
+			lastPTSsOfPreviousSource.putAll(ptss);
+			lastPacketsOfPreviousSource.putAll(allPackets);
+			pcrPackets.clear();
+			ptss.clear();
+			allPackets.clear();
 		}
 	}
 
