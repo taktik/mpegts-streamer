@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -12,7 +13,8 @@ public class MultiMTSSource implements MTSSource {
 
 	boolean fixContinuity;
 	private MTSSource[] sources;
-	int idx = 0;
+	private MTSSource currentSource;
+	int idx;
 
 	private Map<Integer,MTSPacket> pcrPackets;
 	private Map<Integer,MTSPacket> allPackets;
@@ -27,10 +29,13 @@ public class MultiMTSSource implements MTSSource {
 	private Map<Integer, Integer> continuityFixes = Maps.newHashMap();
 
 	protected MultiMTSSource(boolean fixContinuity, MTSSource... sources) {
+		Preconditions.checkArgument(sources.length > 0, "Multisource must at least contain one source");
 		this.sources = sources;
 		this.fixContinuity = fixContinuity;
+		idx = 0;
+		currentSource = this.sources[0];
 		if (fixContinuity) {
-			 pcrPackets = Maps.newHashMap();
+			pcrPackets = Maps.newHashMap();
 			allPackets = Maps.newHashMap();
 			ptss = Maps.newHashMap();
 			lastPTSsOfPreviousSource = Maps.newHashMap();
@@ -50,7 +55,7 @@ public class MultiMTSSource implements MTSSource {
 
 	@Override
 	public MTSPacket nextPacket() throws Exception {
-		if (idx >= sources.length) {
+		if (currentSource == null) {
 			return null;
 		}
 		MTSPacket tsPacket = sources[idx].nextPacket();
@@ -60,11 +65,7 @@ public class MultiMTSSource implements MTSSource {
 			}
 			return tsPacket;
 		} else {
-			idx++;
-			if (idx < sources.length) {
-				switchSource();
-			}
-
+			switchSource();
 			return nextPacket();
 		}
 	}
@@ -86,6 +87,8 @@ public class MultiMTSSource implements MTSSource {
 			ptss.clear();
 			allPackets.clear();
 		}
+		idx++;
+		currentSource = (idx < sources.length) ? sources[idx] : null;
 	}
 
 	private void fixContinuity(MTSPacket tsPacket) {

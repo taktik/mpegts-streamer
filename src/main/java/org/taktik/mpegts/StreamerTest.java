@@ -1,7 +1,6 @@
 package org.taktik.mpegts;
 
 import java.io.File;
-import java.nio.channels.FileChannel;
 
 public class StreamerTest {
 	public static void main(String[] args) throws Exception {
@@ -15,35 +14,22 @@ public class StreamerTest {
 				.build();
 
 		// Set up packet source
-		MTSSource media123 = ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts").toPath()))
-				.build();
-
+		ResettableMTSSource media123 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
 
 		// Set up packet source
-		MTSSource media132= ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts").toPath()))
-				.build();
+		ResettableMTSSource media132= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
 
 		// Set up packet source
-		MTSSource media132_2= ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts").toPath()))
-				.build();
+		ResettableMTSSource media132_2= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
 
 		// Set up packet source
-		MTSSource media133= ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts").toPath()))
-				.build();
+		ResettableMTSSource media133= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
 
 		// Set up packet source
-		MTSSource media133_2 = ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts").toPath()))
-				.build();
+		ResettableMTSSource media133_2 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
 
 		// Set up packet source
-		MTSSource appleIntro= ByteChannelMTSSource.builder()
-				.setByteChannel(FileChannel.open(new File("/Users/abaudoux/Downloads/Apple WWDC 2013 Keynote Intro Video.ffmpeg.ts").toPath()))
-				.build();
+		ResettableMTSSource appleIntro= MTSSources.from(new File("/Users/abaudoux/Downloads/Apple WWDC 2013 Keynote Intro Video.ffmpeg.ts"));
 
 		// media132, media133 --> ok
 		// media133, media132 --> ok
@@ -57,7 +43,7 @@ public class StreamerTest {
 
 		// build streamer
 		Streamer streamer = Streamer.builder()
-				.setSource(source)
+				.setSource(MTSSources.loop(media123))
 				.setSink(transport)
 				.build();
 
