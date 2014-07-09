@@ -49,7 +49,6 @@ public class StreamerTest {
 		// media133, media132 --> ok
 		// media123, media132 --> ko
 
-
 		// build streamer
 		Streamer streamer = Streamer.builder()
 				.setSource(MTSSources.fromSources(media123, media132))

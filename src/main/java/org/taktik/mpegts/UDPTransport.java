@@ -27,7 +27,7 @@ public class UDPTransport implements MTSSink {
 
 	@Override
 	public void send(MTSPacket packet) throws IOException {
-		ByteBuffer buffer = packet.packet;
+		ByteBuffer buffer = packet.getBuffer();
 		DatagramPacket datagramPacket = new DatagramPacket(buffer.array(), buffer.capacity(), inetSocketAddress);
 		multicastSocket.send(datagramPacket);
 	}

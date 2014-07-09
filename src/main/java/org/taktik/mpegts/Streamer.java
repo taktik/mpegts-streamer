@@ -67,12 +67,12 @@ public class Streamer {
 				}
 
 				// Check for PCR
-				if (mtsPacket.adaptationField != null) {
-					if (mtsPacket.adaptationField.pcr != null) {
+				if (mtsPacket.getAdaptationField() != null) {
+					if (mtsPacket.getAdaptationField().getPcr() != null) {
 						if (true) {//mtsPacket.pid == pmt.getPcrPid()) {
-							if (!mtsPacket.adaptationField.discontinuityIndicator) {
+							if (!mtsPacket.getAdaptationField().isDiscontinuityIndicator()) {
 								// Get PCR and current nano time
-								long pcrValue = mtsPacket.adaptationField.pcr.getValue();
+								long pcrValue = mtsPacket.getAdaptationField().getPcr().getValue();
 								long pcrTime = System.nanoTime();
 								pcrCount++;
 
@@ -130,7 +130,7 @@ public class Streamer {
 				}
 
 				// Stream packet
-				System.out.println("Streaming packet #" + packetCount + ", PID=" + mtsPacket.pid + ", pcrCount=" + pcrCount + ", continuityCounter=" + mtsPacket.continuityCounter);
+				// System.out.println("Streaming packet #" + packetCount + ", PID=" + mtsPacket.getPid() + ", pcrCount=" + pcrCount + ", continuityCounter=" + mtsPacket.getContinuityCounter());
 
 				sink.send(mtsPacket);
 

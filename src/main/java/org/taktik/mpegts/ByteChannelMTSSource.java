@@ -25,7 +25,7 @@ public class ByteChannelMTSSource implements MTSSource {
 		buffer.flip();
 
 		// Parse the packet
-		return MTSPacket.parsePacket(buffer);
+		return new MTSPacket(buffer);
 	}
 
 	public static ByteChannelMTSSourceBuilder builder() {
