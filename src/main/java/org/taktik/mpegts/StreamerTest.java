@@ -49,9 +49,15 @@ public class StreamerTest {
 		// media133, media132 --> ok
 		// media123, media132 --> ko
 
+		// Build source
+		MTSSource source = MultiMTSSource.builder()
+				.setSources(media123, media132)
+				.setFixContinuity(false)
+				.build();
+
 		// build streamer
 		Streamer streamer = Streamer.builder()
-				.setSource(MTSSources.fromSources(media123, media132))
+				.setSource(source)
 				.setSink(transport)
 				.build();
 

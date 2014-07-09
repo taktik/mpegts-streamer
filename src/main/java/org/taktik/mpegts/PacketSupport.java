@@ -19,9 +19,10 @@ public abstract class PacketSupport {
 	}
 
 	public ByteBuffer getBuffer() {
-		if (true) {
+		if (dirty) {
 			write();
 			buffer.rewind();
+			dirty = false;
 		}
 		return buffer;
 	}
