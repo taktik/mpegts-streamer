@@ -10,7 +10,7 @@ import com.google.common.collect.Maps;
 
 public class MultiMTSSource implements MTSSource {
 
-	boolean fixContinuity = false;
+	boolean fixContinuity;
 	private MTSSource[] sources;
 	int idx = 0;
 
