@@ -73,7 +73,7 @@ public class MultiMTSSource implements MTSSource {
 				idx = 0;
 				for (MTSSource source : sources) {
 					try {
-						((ResettableMTSSource)source).reset();
+						((ResettableMTSSource) source).reset();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -95,7 +95,8 @@ public class MultiMTSSource implements MTSSource {
 		boolean fixContinuity = false;
 		private int maxLoops = 1;
 
-		private MultiMTSSourceBuilder(){}
+		private MultiMTSSourceBuilder() {
+		}
 
 		public MultiMTSSourceBuilder addSource(MTSSource source) {
 			sources.add(source);
@@ -138,7 +139,7 @@ public class MultiMTSSource implements MTSSource {
 		}
 
 		public MultiMTSSource build() {
-			return new MultiMTSSource(fixContinuity,maxLoops, sources);
+			return new MultiMTSSource(fixContinuity, maxLoops, sources);
 		}
 	}
 }
