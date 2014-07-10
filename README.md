@@ -54,7 +54,7 @@ A `MTSSource` can be built from several objects:
 
 ```java
 // From a File
-MTSSource source = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+ResettableMTSSource source = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
 
 // From a ByteChannel
 ByteChannel byteChannel = ...;
@@ -73,6 +73,14 @@ InputStream is = ...;
 ResettableMTSSource source = MTSSources.from(is);
 ```
 
+#### Looping
+
+From a `ResettableMTSSource`, a looping source can be built:
+
+```java
+ResettableMTSSource source = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+MTSSource loop = MTSSources.loop(source);
+```
 
 
 
