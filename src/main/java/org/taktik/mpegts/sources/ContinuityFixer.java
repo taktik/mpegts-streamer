@@ -19,7 +19,7 @@ public class ContinuityFixer {
 	private Map<Integer, MTSPacket> firstPacketsOfCurrentSource = Maps.newHashMap();
 	private Map<Integer, Integer> continuityFixes = Maps.newHashMap();
 
-	boolean firstSource;
+	private boolean firstSource;
 
 
 	public ContinuityFixer() {
