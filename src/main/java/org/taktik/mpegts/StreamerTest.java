@@ -14,7 +14,7 @@ public class StreamerTest {
 
 		// Set up mts sink
 		MTSSink transport = UDPTransport.builder()
-				.setAddress("127.0.0.1")
+				.setAddress("239.222.1.1")
 				.setPort(1234)
 				.setSoTimeout(5000)
 				.setTtl(1)
@@ -45,7 +45,8 @@ public class StreamerTest {
 		// Build source
 		MTSSource source = MultiMTSSource.builder()
 				.setSources(media123, media132, media133)
-				.setFixContinuity(true)
+				.setFixContinuity(false)
+				.loop()
 				.build();
 
 		// build streamer
@@ -54,6 +55,7 @@ public class StreamerTest {
 				.setSink(transport)
 				.build();
 
+		// Start streaming
 		streamer.stream();
 
 	}
