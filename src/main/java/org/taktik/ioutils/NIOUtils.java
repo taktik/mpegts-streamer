@@ -12,4 +12,10 @@ public class NIOUtils {
 		}
 		return buffer.position() - rem;
 	}
+
+	public static int skip(ByteBuffer buffer, int count) {
+		int toSkip = Math.min(buffer.remaining(), count);
+		buffer.position(buffer.position() + toSkip);
+		return toSkip;
+	}
 }
