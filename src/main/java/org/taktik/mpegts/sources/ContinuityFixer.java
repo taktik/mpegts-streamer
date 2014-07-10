@@ -79,13 +79,10 @@ public class ContinuityFixer {
 	private void fixPCR(MTSPacket tsPacket, int pid) {
 		if (tsPacket.isAdaptationFieldExist() && tsPacket.getAdaptationField() != null) {
 			if (tsPacket.getAdaptationField().isPcrFlag()) {
-
 				if (!firstPCRsOfCurrentSource.containsKey(pid)) {
 					firstPCRsOfCurrentSource.put(pid, tsPacket.getAdaptationField().getPcr().getValue());
 				}
 				rewritePCR(tsPacket);
-
-
 				pcrPackets.put(pid, tsPacket);
 			}
 		}
@@ -167,7 +164,6 @@ public class ContinuityFixer {
 			}
 		}
 
-		System.err.println("Probably bad gap");
 		return 0;
 	}
 
@@ -178,7 +174,6 @@ public class ContinuityFixer {
 		long timeGap = getTimeGap(tsPacket.getPid());
 		long pcr = tsPacket.getAdaptationField().getPcr().getValue();
 		long newPcr = pcr + timeGap + 100 * ((27000000) / 1000);
-		System.out.println("NewPcr : " + newPcr);
 		tsPacket.getAdaptationField().getPcr().setValue(newPcr);
 	}
 }
