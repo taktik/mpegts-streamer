@@ -10,7 +10,7 @@ Example:
 // Set up packet source
 MTSSource movie = MTSSources.from(new File("/Users/abaudoux/movie.ts"));
 
-// Set up packet sink
+// Set up packet sink. We will send packets directly in UDP
 MTSSink transport = UDPTransport.builder()
 				.setAddress("127.0.0.1") // Can be a multicast address
 				.setPort(1234)
