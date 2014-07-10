@@ -86,6 +86,10 @@ MTSSource loop = MTSSources.loop(source);
 MTSSource loop2 = MTSSources.loop(source, 5);
 ```
 
+### MultiSource
+
+Multiple simple sources can be combined into a MTSSource using a `MultiMTSSource`. The MultiMTSSource will read each source in order, so the resulting MTSSource will be a concatenation of the original sources.
+
 
 
 
