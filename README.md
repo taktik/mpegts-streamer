@@ -98,10 +98,33 @@ MTSSource movie1 = ...;
 MTSSource movie2 = ...;
 MTSSource movie3 = ...;
 
-// Simple MultiSource, no looping
+// No looping
 MTSSource playList = MultiMTSSource.builder()
 	.setSources(movie1, movie2, movie3)
 	.build();
+	
+// Simpler alternate form
+MTSSource playList = MTSSources.fromSources(movie1, movie2, movie3);
+
+// Infinite looping
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loop()
+	.build();
+	
+// Finite number of loops
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loops(5)	// 5 loops
+	.build();
+	
+// Infinite looping, continuity fix
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loop()
+	.setFixContinuity(true)
+	.build();
+	
 ```
 
 
