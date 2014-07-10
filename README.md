@@ -79,7 +79,11 @@ From a `ResettableMTSSource`, a looping source can be built:
 
 ```java
 ResettableMTSSource source = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+// Loop forever
 MTSSource loop = MTSSources.loop(source);
+
+// Loop 5 times
+MTSSource loop2 = MTSSources.loop(source, 5);
 ```
 
 
