@@ -94,9 +94,13 @@ A `MultiMTSSource` supports looping, if and only if its composing sources all im
 
 Example:
 ```java
-// Building a MultiSource
+MTSSource movie1 = ...;
+MTSSource movie2 = ...;
+MTSSource movie3 = ...;
+
+// Simple MultiSource, no looping
 MTSSource source = MultiMTSSource.builder()
-	.setSources(media123, media132, media133)
+	.setSources(movie1, movie2, movie3)
 	.build();
 ```
 
