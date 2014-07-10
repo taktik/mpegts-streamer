@@ -449,14 +449,14 @@ public class MTSPacket extends PacketSupport {
 				// PCR
 				MTSPacket.AdaptationField.PCR pcr = null;
 				if (pcrFlag) {
-					pcr = parsePCR(adaptationField);
+					pcr = parsePCR();
 					remainingBytes -= 6;
 				}
 
 				// OPCR
 				MTSPacket.AdaptationField.PCR opcr = null;
 				if (opcrFlag) {
-					opcr = parsePCR(adaptationField);
+					opcr = parsePCR();
 					remainingBytes -= 6;
 				}
 
@@ -504,7 +504,7 @@ public class MTSPacket extends PacketSupport {
 		this.payload = containsPayload ? buffer.slice() : null;
 	}
 
-	private AdaptationField.PCR parsePCR(AdaptationField adaptationField) {
+	private AdaptationField.PCR parsePCR() {
 		AdaptationField.PCR pcr;
 		byte[] pcrBytes = new byte[6];
 		buffer.get(pcrBytes);
@@ -513,7 +513,7 @@ public class MTSPacket extends PacketSupport {
 		long base = (pcrBits & 0xFFFFFFFF8000L) >> 15;
 		byte reserved =  (byte) ((pcrBits & 0x7E00) >> 9);
 		int extension = (int) (pcrBits & 0x1FFL);
-		pcr = new AdaptationField.PCR(adaptationField, base, extension, reserved);
+		pcr = new AdaptationField.PCR(null, base, extension, reserved);
 		return pcr;
 	}
 

@@ -49,7 +49,6 @@ public class Streamer {
 				mtsPacket = source.nextPacket();
 
 				if (mtsPacket == null) {
-					System.err.println("End of source reached");
 					break;
 				}
 
