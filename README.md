@@ -33,15 +33,17 @@ streamer.stream();
 ## Concepts
 
 The API uses the concepts of packet sources and packet sinks. 
-A packet source is a generic provider of TS packets. The corresponding Java interface is `MTSSource`. See section below for implementations.
-A packet sink is a generic consumer of TS packets. The corresponding Java interface is `MTSSink`. See section below for implementations.
+A packet source is a generic provider of TS packets. The corresponding Java interface is `MTSSource`.
+
+A packet sink is a generic consumer of TS packets. The corresponding Java interface is `MTSSink`. 
+
+See section below for implementations.
 
 The streamer reads packets from a packet source, and sends them to a packet sink with the correct timing.
 
-, by the  and `MTSSink`
 
 ## Sources
 
-Several implementations 
+Simple sources are built from one ts stream. MultiSources are built by 
 
 
