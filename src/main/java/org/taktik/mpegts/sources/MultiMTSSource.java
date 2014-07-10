@@ -127,7 +127,7 @@ public class MultiMTSSource implements MTSSource {
 			return this;
 		}
 
-		public MultiMTSSourceBuilder loop(int count) {
+		public MultiMTSSourceBuilder loops(int count) {
 			this.maxLoops = count;
 			return this;
 		}

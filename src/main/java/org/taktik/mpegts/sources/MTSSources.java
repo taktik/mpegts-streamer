@@ -12,13 +12,18 @@ import com.google.common.io.ByteSource;
 
 public class MTSSources {
 	public static MTSSource fromSources(MTSSource... sources) {
-		return fromSources(false, sources);
+		return fromSources(1, false, sources);
 	}
 
-	public static MTSSource fromSources(boolean fixContinuity, MTSSource... sources) {
+	public static MTSSource fromSources(int loops, MTSSource... sources) {
+		return fromSources(loops, false, sources);
+	}
+
+	public static MTSSource fromSources(int loops, boolean fixContinuity, MTSSource... sources) {
 		return MultiMTSSource.builder()
 				.setFixContinuity(fixContinuity)
 				.setSources(sources)
+				.loops(loops)
 				.build();
 	}
 
