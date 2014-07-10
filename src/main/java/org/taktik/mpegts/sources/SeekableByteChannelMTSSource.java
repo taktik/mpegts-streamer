@@ -42,6 +42,8 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 	public static class SeekableByteChannelMTSSourceBuilder {
 		private SeekableByteChannel byteChannel;
 
+		private SeekableByteChannelMTSSourceBuilder(){}
+
 		public SeekableByteChannelMTSSourceBuilder setByteChannel(SeekableByteChannel byteChannel) {
 			this.byteChannel = byteChannel;
 			return this;

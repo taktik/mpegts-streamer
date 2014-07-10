@@ -44,8 +44,8 @@ public class StreamerTest {
 
 		// Build source
 		MTSSource source = MultiMTSSource.builder()
-				.setSources(media123, media132)
-				.setFixContinuity(false)
+				.setSources(media123, media132, media133)
+				.setFixContinuity(true)
 				.build();
 
 		// build streamer

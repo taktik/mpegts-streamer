@@ -124,7 +124,7 @@ public class MultiMTSSource implements MTSSource {
 						if (lastPTSOfPreviousSource == null) {
 							lastPTSOfPreviousSource = 0l;
 						}
-						long newPts = lastPTSOfPreviousSource + (pts - firstPTSsOfCurrentSource.get(pid));// + 70 * ((27000000 / 300) / 1000);
+						long newPts = lastPTSOfPreviousSource + (pts - firstPTSsOfCurrentSource.get(pid)) + 100 * ((27000000 / 300) / 1000);
 
 						payload.put(9, (byte) (0x20 | ((newPts & 0x1C0000000l) >> 29) | 0x1));
 						payload.putShort(10, (short) (0x1 | ((newPts & 0x3FFF8000) >> 14)));
@@ -162,7 +162,7 @@ public class MultiMTSSource implements MTSSource {
 		Long firstPCROfCurrentSource = firstPCRsOfCurrentSource.get(tsPacket.getPid());
 		long pcr = tsPacket.getAdaptationField().getPcr().getValue();
 
-		long newPcr = lastPCROfPreviousSource + (pcr - firstPCROfCurrentSource);//; + 70 * ((27000000) / 1000);;
+		long newPcr = lastPCROfPreviousSource + (pcr - firstPCROfCurrentSource) + 100 * ((27000000) / 1000);
 		System.out.println("NewPcr : " + newPcr);
 		tsPacket.getAdaptationField().getPcr().setValue(newPcr);
 	}
@@ -174,6 +174,8 @@ public class MultiMTSSource implements MTSSource {
 	public static class MultiMTSSourceBuilder {
 		private List<MTSSource> sources = Lists.newArrayList();
 		boolean fixContinuity = false;
+
+		private MultiMTSSourceBuilder(){}
 
 		public MultiMTSSourceBuilder addSource(MTSSource source) {
 			sources.add(source);
