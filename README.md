@@ -86,6 +86,47 @@ MTSSource loop = MTSSources.loop(source);
 MTSSource loop2 = MTSSources.loop(source, 5);
 ```
 
+### MultiSource
+
+Multiple simple sources can be combined into a MTSSource using a `MultiMTSSource`. The MultiMTSSource will read each source in order, so the resulting MTSSource will be a concatenation of the original sources. This can be useful for streaming a playlist of individual movies.
+
+A `MultiMTSSource` supports looping, if and only if its composing sources all implement `ResettableMTSSource`
+
+Example:
+```java
+MTSSource movie1 = ...;
+MTSSource movie2 = ...;
+MTSSource movie3 = ...;
+
+// No looping
+MTSSource playList = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.build();
+	
+// Simpler alternate form
+MTSSource playList = MTSSources.fromSources(movie1, movie2, movie3);
+
+// Infinite looping
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loop()
+	.build();
+	
+// Finite number of loops
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loops(5)	// 5 loops
+	.build();
+	
+// Infinite looping, continuity fix
+MTSSource playLoop = MultiMTSSource.builder()
+	.setSources(movie1, movie2, movie3)
+	.loop()
+	.setFixContinuity(true)
+	.build();
+	
+```
+
 
 
 
