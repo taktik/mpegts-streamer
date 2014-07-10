@@ -99,7 +99,7 @@ MTSSource movie2 = ...;
 MTSSource movie3 = ...;
 
 // Simple MultiSource, no looping
-MTSSource source = MultiMTSSource.builder()
+MTSSource playList = MultiMTSSource.builder()
 	.setSources(movie1, movie2, movie3)
 	.build();
 ```
