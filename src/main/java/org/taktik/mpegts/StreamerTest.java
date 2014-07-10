@@ -2,6 +2,13 @@ package org.taktik.mpegts;
 
 import java.io.File;
 
+import org.taktik.mpegts.sinks.MTSSink;
+import org.taktik.mpegts.sinks.UDPTransport;
+import org.taktik.mpegts.sources.MTSSource;
+import org.taktik.mpegts.sources.MTSSources;
+import org.taktik.mpegts.sources.MultiMTSSource;
+import org.taktik.mpegts.sources.ResettableMTSSource;
+
 public class StreamerTest {
 	public static void main(String[] args) throws Exception {
 

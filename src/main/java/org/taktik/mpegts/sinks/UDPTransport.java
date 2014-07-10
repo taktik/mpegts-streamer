@@ -1,10 +1,12 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sinks;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
+
+import org.taktik.mpegts.MTSPacket;
 
 public class UDPTransport implements MTSSink {
 

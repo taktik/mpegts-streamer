@@ -1,6 +1,8 @@
 package org.taktik.mpegts;
 
 import com.google.common.base.Preconditions;
+import org.taktik.mpegts.sinks.MTSSink;
+import org.taktik.mpegts.sources.MTSSource;
 
 public class Streamer {
 	private MTSSource source;

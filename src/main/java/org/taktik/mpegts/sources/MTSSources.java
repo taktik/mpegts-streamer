@@ -1,4 +1,4 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sources;
 
 
 import java.io.File;

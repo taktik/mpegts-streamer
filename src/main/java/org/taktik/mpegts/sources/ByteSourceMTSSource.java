@@ -1,10 +1,12 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sources;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteSource;
+import org.taktik.mpegts.Constants;
+import org.taktik.mpegts.MTSPacket;
 
 public class ByteSourceMTSSource implements ResettableMTSSource {
 

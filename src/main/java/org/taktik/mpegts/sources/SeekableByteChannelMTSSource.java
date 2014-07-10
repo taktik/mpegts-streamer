@@ -1,4 +1,4 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sources;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -6,6 +6,8 @@ import java.nio.channels.SeekableByteChannel;
 
 import com.google.common.base.Preconditions;
 import org.taktik.ioutils.NIOUtils;
+import org.taktik.mpegts.Constants;
+import org.taktik.mpegts.MTSPacket;
 
 public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 

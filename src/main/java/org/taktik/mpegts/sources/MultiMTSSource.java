@@ -1,4 +1,4 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sources;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.taktik.mpegts.MTSPacket;
 
 public class MultiMTSSource implements MTSSource {
 

@@ -1,4 +1,6 @@
-package org.taktik.mpegts;
+package org.taktik.mpegts.sources;
+
+import org.taktik.mpegts.MTSPacket;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
