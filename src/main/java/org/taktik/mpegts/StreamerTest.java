@@ -15,6 +15,7 @@ public class StreamerTest {
 		// Set up mts sink
 		MTSSink transport = UDPTransport.builder()
 				.setAddress("239.222.1.1")
+				//.setAddress("127.0.0.1")
 				.setPort(1234)
 				.setSoTimeout(5000)
 				.setTtl(1)
@@ -22,21 +23,28 @@ public class StreamerTest {
 
 		// Set up packet source
 		ResettableMTSSource media123 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+		ResettableMTSSource media123_2 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+		ResettableMTSSource media123_3 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+		ResettableMTSSource media123_4 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+		ResettableMTSSource media123_5 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
 
 		// Set up packet source
-		ResettableMTSSource media132= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+		ResettableMTSSource media132 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+		ResettableMTSSource media132_2 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+		ResettableMTSSource media132_3 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+		ResettableMTSSource media132_4 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+		ResettableMTSSource media132_5 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
+
 
 		// Set up packet source
-		ResettableMTSSource media132_2= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-132.ffmpeg.ts"));
-
-		// Set up packet source
-		ResettableMTSSource media133= MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
-
-		// Set up packet source
+		ResettableMTSSource media133 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
 		ResettableMTSSource media133_2 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
+		ResettableMTSSource media133_3 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
+		ResettableMTSSource media133_4 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
+		ResettableMTSSource media133_5 = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-133.ffmpeg.ts"));
 
 		// Set up packet source
-		ResettableMTSSource appleIntro= MTSSources.from(new File("/Users/abaudoux/Downloads/Apple WWDC 2013 Keynote Intro Video.ffmpeg.ts"));
+		ResettableMTSSource appleIntro = MTSSources.from(new File("/Users/abaudoux/Downloads/Apple WWDC 2013 Keynote Intro Video.ffmpeg.ts"));
 
 		// media132, media133 --> ok
 		// media133, media132 --> ok
@@ -44,8 +52,10 @@ public class StreamerTest {
 
 		// Build source
 		MTSSource source = MultiMTSSource.builder()
-				.setSources(media123, media132, media133)
-				.setFixContinuity(false)
+				.setSources(
+						media123, media132, media133
+				)
+				.setFixContinuity(true)
 				.loop()
 				.build();
 
