@@ -320,7 +320,7 @@ public class MTSPacket extends PacketSupport {
 			payloadLength = payload.capacity();
 			buffer.mark();
 			payload.mark();
-			buffer.position(188 - payloadLength);
+			buffer.position(Constants.MPEGTS_PACKET_SIZE - payloadLength);
 			buffer.put(payload);
 			buffer.reset();
 			payload.reset();
