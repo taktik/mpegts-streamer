@@ -44,6 +44,37 @@ The streamer reads packets from a packet source, and sends them to a packet sink
 
 ## Sources
 
-Simple sources are built from one ts stream. MultiSources are built by 
+Simple sources are built from one ts stream. MultiSources are built by combining existing sources.
+
+A `ResettableMTSSource` is a `MTSSource` than can reset itself. This can be useful when a source has to be streamed more than once.
+
+### Simple sources
+
+A `MTSSource` can be built from several objects:
+
+```java
+// From a File
+MTSSource source = MTSSources.from(new File("/Users/abaudoux/Downloads/Media-123.ffmpeg.ts"));
+
+// From a ByteChannel
+ByteChannel byteChannel = ...;
+MTSSource source = MTSSources.from(byteChannel);
+
+// If you have got a SeekableByteChannel, you get a ResettableMTSSource
+SeekableByteChannel seekableByteChannel = ...;
+ResettableMTSSource source = MTSSources.from(seekableByteChannel);
+
+// Works also for a Guava ByteSource
+ByteSource bs = ...;
+ResettableMTSSource source = MTSSources.from(bs);
+
+// From an InputStream
+InputStream is = ...;
+ResettableMTSSource source = MTSSources.from(is);
+```
+
+
+
+
 
 
