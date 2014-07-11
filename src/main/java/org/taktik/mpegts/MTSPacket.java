@@ -6,39 +6,39 @@ import com.google.common.base.Preconditions;
 import org.taktik.ioutils.NIOUtils;
 
 public class MTSPacket extends PacketSupport {
-	private boolean transportErrorIndicator;				// Transport Error Indicator (TEI)
-	private boolean payloadUnitStartIndicator;			// Payload Unit Start Indicator
-	private boolean transportPriority;					// Transport Priority
-	private int pid;										// Packet Identifier (PID)
-	private int scramblingControl;						// Scrambling control
-	private boolean adaptationFieldExist;				// Adaptation field exist
-	private boolean containsPayload;						// Contains payload
-	private int continuityCounter;						// Continuity counter
+	private boolean transportErrorIndicator;	// Transport Error Indicator (TEI)
+	private boolean payloadUnitStartIndicator;	// Payload Unit Start Indicator
+	private boolean transportPriority;			// Transport Priority
+	private int pid;							// Packet Identifier (PID)
+	private int scramblingControl;				// Scrambling control
+	private boolean adaptationFieldExist;		// Adaptation field exist
+	private boolean containsPayload;			// Contains payload
+	private int continuityCounter;				// Continuity counter
 
 	private AdaptationField adaptationField;
 	private ByteBuffer payload;
 
 	public static class AdaptationField {
 		private MTSPacket packet;
-		private boolean discontinuityIndicator;				// Discontinuity indicator
-		private boolean randomAccessIndicator;				// Random Access indicator
+		private boolean discontinuityIndicator;		// Discontinuity indicator
+		private boolean randomAccessIndicator;		// Random Access indicator
 		private boolean elementaryStreamPriorityIndicator;	// Elementary stream priority indicator
-		private boolean pcrFlag;								// PCR flag
-		private boolean opcrFlag;							// OPCR flag
-		private boolean splicingPointFlag;					// Splicing point flag
-		private boolean transportPrivateDataFlag;			// Transport private data flag
-		private boolean adaptationFieldExtensionFlag;		// Adaptation field extension flag
-		private PCR pcr;										// PCR
-		private PCR opcr;									// OPCR
-		private byte spliceCountdown;						// Splice countdown
-		private byte[] privateData;                          // Private data
-		private byte[] extension;                            // Extension
+		private boolean pcrFlag;					// PCR flag
+		private boolean opcrFlag;					// OPCR flag
+		private boolean splicingPointFlag;			// Splicing point flag
+		private boolean transportPrivateDataFlag;	// Transport private data flag
+		private boolean adaptationFieldExtensionFlag;	// Adaptation field extension flag
+		private PCR pcr;							// PCR
+		private PCR opcr;							// OPCR
+		private byte spliceCountdown;				// Splice countdown
+		private byte[] privateData;					// Private data
+		private byte[] extension;					// Extension
 
 		public static class PCR {
 			private AdaptationField field;
-			public long base;								// 33 bits
-			public int extension;							// 9 bits
-			public byte reserved;                           // 6 bits
+			public long base;						// 33 bits
+			public int extension;					// 9 bits
+			public byte reserved;					// 6 bits
 
 			public PCR(AdaptationField field, long base, int extension, byte reserved) {
 				this.base = base;
