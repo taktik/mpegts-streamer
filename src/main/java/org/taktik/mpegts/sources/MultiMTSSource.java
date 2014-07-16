@@ -19,6 +19,7 @@ public class MultiMTSSource implements MTSSource {
 	private ContinuityFixer continuityFixer;
 	private int maxLoops;
 	private int currentLoop;
+	private boolean closeCurrentSource;
 
 	protected MultiMTSSource(boolean fixContinuity, int maxloops, Collection<MTSSource> sources) {
 		Preconditions.checkArgument(sources.size() > 0, "Multisource must at least contain one source");
@@ -35,11 +36,7 @@ public class MultiMTSSource implements MTSSource {
 			checkLoopingPossible(sources);
 		}
 		this.currentLoop = 1;
-	}
-
-	public void setSources(List<MTSSource> newSources) {
-		checkLoopingPossible(newSources);
-
+		this.closeCurrentSource = false;
 	}
 
 	private void checkLoopingPossible(Collection<MTSSource> sources) {
@@ -71,15 +68,46 @@ public class MultiMTSSource implements MTSSource {
 		}
 	}
 
+	public synchronized void updateSources(List<MTSSource> newSources) {
+		checkLoopingPossible(newSources);
+		List<MTSSource> oldSources = this.sources;
+		this.sources = newSources;
+		for (MTSSource oldSource : oldSources) {
+			if (!newSources.contains(oldSource) && oldSource != currentSource) {
+				try {
+					oldSource.close();
+				} catch (Exception e) {
+					log.error("Error closing source", e);
+
+				}
+			}
+		}
+		closeCurrentSource = !newSources.contains(currentSource);
+		// Force next call to nextSource() to pick source 0 (first source)
+		idx = -1;
+	}
+
 	@Override
-	public void close() throws Exception {
+	public synchronized void close() throws Exception {
 		for (MTSSource source : sources) {
 			source.close();
 		}
+		if (closeCurrentSource && currentSource != null && !sources.contains(currentSource)) {
+			currentSource.close();
+		}
 	}
 
-	private void nextSource() {
-		log.info("switching source");
+
+	private synchronized void nextSource() {
+		if (closeCurrentSource) {
+			try {
+				currentSource.close();
+			} catch (Exception e) {
+				log.error("Error closing source", e);
+			} finally {
+				closeCurrentSource = false;
+			}
+		}
 		if (fixContinuity) {
 			continuityFixer.nextSource();
 		}
@@ -102,8 +130,10 @@ public class MultiMTSSource implements MTSSource {
 		} else {
 			currentSource = sources.get(idx);
 		}
+		if (idx < sources.size()) {
+			log.info("Switched to source #{}", idx);
+		}
 	}
-
 
 	public static MultiMTSSourceBuilder builder() {
 		return new MultiMTSSourceBuilder();

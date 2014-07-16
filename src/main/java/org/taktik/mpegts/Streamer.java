@@ -44,11 +44,11 @@ public class Streamer {
 		preBuffer();
 		log.info("Done PreBuffering");
 
-		bufferingThread = new Thread(this::fillBuffer);
+		bufferingThread = new Thread(this::fillBuffer, "buffering");
 		bufferingThread.setDaemon(true);
 		bufferingThread.start();
 
-		streamingThread = new Thread(this::internalStream);
+		streamingThread = new Thread(this::internalStream, "streaming");
 		streamingThread.setDaemon(true);
 		streamingThread.start();
 	}

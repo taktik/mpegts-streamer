@@ -117,6 +117,7 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 	@Override
 	public void reset() throws IOException {
 		byteChannel.position(0);
+		fillBuffer();
 	}
 
 	public static class SeekableByteChannelMTSSourceBuilder {
