@@ -21,10 +21,10 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 
 	private SeekableByteChannelMTSSource(SeekableByteChannel byteChannel) throws IOException {
 		this.byteChannel = byteChannel;
-		fillBuffer(byteChannel);
+		fillBuffer();
 	}
 
-	private void fillBuffer(SeekableByteChannel byteChannel) throws IOException {
+	private void fillBuffer() throws IOException {
 		buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		NIOUtils.read(byteChannel, buffer);
 		buffer.flip();
@@ -33,22 +33,6 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 	private boolean lastBuffer() {
 		return buffer.capacity() > buffer.limit();
 	}
-
-	int counter;
-
-
-//	@Override
-//	public MTSPacket nextPacket() throws IOException {
-//		// Get next packet
-//		ByteBuffer buffer = ByteBuffer.allocate(Constants.MPEGTS_PACKET_SIZE);
-//		if (NIOUtils.read(byteChannel, buffer) != Constants.MPEGTS_PACKET_SIZE) {
-//			return null;
-//		}
-//		buffer.flip();
-//
-//		// Parse the packet
-//		return new MTSPacket(buffer);
-//	}
 
 	@Override
 	public MTSPacket nextPacket() throws IOException {
@@ -85,6 +69,7 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 					buffer.position(buffer.position() + Constants.MPEGTS_PACKET_SIZE);
 				} else {
 					log.info("no second marker found");
+					buffer.position(buffer.position() + 1);
 				}
 			} else if (!lastBuffer()) {
 				log.info("NEW BUFFER");
@@ -104,6 +89,7 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 						buffer.position(buffer.position() + Constants.MPEGTS_PACKET_SIZE);
 					} else {
 						log.info("no second marker found");
+						buffer.position(buffer.position() + 1);
 					}
 				} else {
 					return null;
@@ -114,16 +100,14 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 
 			if (packetBuffer != null) {
 				// Parse the packet
-				MTSPacket mtsPacket = new MTSPacket(packetBuffer);
-				if (mtsPacket.getPid() == 256) {
-					if (((counter + 1) % 16) != mtsPacket.getContinuityCounter()) {
-						log.info("ERROR");
-					}
-					counter = mtsPacket.getContinuityCounter();
-				}
-				return mtsPacket;
+				return new MTSPacket(packetBuffer);
 			}
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		byteChannel.close();
 	}
 
 	public static SeekableByteChannelMTSSourceBuilder builder() {

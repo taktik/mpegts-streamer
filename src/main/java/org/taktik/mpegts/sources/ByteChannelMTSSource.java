@@ -30,6 +30,11 @@ public class ByteChannelMTSSource implements MTSSource {
 		return new MTSPacket(buffer);
 	}
 
+	@Override
+	public void close() throws IOException {
+		byteChannel.close();
+	}
+
 	public static ByteChannelMTSSourceBuilder builder() {
 		return new ByteChannelMTSSourceBuilder();
 	}

@@ -317,15 +317,12 @@ public class MTSPacket extends PacketSupport {
 		// First write payload
 		int payloadLength = 0;
 		if (containsPayload && payload != null) {
+			payload.clear();
 			payloadLength = payload.capacity();
-			buffer.mark();
-			payload.mark();
 			buffer.position(Constants.MPEGTS_PACKET_SIZE - payloadLength);
 			buffer.put(payload);
-			buffer.reset();
-			payload.reset();
 		}
-
+		buffer.rewind();
 		// First byte
 		buffer.put((byte) 0x47);
 
@@ -368,6 +365,7 @@ public class MTSPacket extends PacketSupport {
 
 		// Payload
 		if (containsPayload && payload != null) {
+			payload.rewind();
 			buffer.put(payload);
 		}
 		if (buffer.remaining() != 0) {

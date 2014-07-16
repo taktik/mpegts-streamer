@@ -13,6 +13,7 @@ public abstract class PacketSupport {
 
 	public PacketSupport(ByteBuffer buffer) {
 		this.buffer = buffer;
+		buffer.rewind();
 		parse();
 		buffer.rewind();
 		dirty = false;

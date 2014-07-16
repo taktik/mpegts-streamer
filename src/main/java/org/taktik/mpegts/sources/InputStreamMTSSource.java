@@ -28,6 +28,11 @@ public class InputStreamMTSSource implements MTSSource {
 		return new MTSPacket(ByteBuffer.wrap(barray));
 	}
 
+	@Override
+	public void close() throws Exception {
+		inputStream.close();
+	}
+
 	public static InputStreamMTSSourceBuilder builder() {
 		return new InputStreamMTSSourceBuilder();
 	}

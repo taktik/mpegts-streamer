@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.taktik.mpegts.MTSPacket;
 
 public class MultiMTSSource implements MTSSource {
-
+	static final Logger log = LoggerFactory.getLogger("multisource");
 	private List<MTSSource> sources;
 	private MTSSource currentSource;
 	private int idx;
@@ -35,8 +37,8 @@ public class MultiMTSSource implements MTSSource {
 		this.currentLoop = 1;
 	}
 
-	public void addSource(MTSSource source) {
-		checkLoopingPossible(source);
+	public void setSources(List<MTSSource> newSources) {
+		checkLoopingPossible(newSources);
 
 	}
 
@@ -69,7 +71,15 @@ public class MultiMTSSource implements MTSSource {
 		}
 	}
 
+	@Override
+	public void close() throws Exception {
+		for (MTSSource source : sources) {
+			source.close();
+		}
+	}
+
 	private void nextSource() {
+		log.info("switching source");
 		if (fixContinuity) {
 			continuityFixer.nextSource();
 		}

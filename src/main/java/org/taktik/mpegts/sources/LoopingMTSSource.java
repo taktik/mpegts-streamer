@@ -31,6 +31,11 @@ public class LoopingMTSSource implements MTSSource{
 		return packet;
 	}
 
+	@Override
+	public void close() throws Exception {
+		source.close();
+	}
+
 	public static LoopingMTSSourceBuilder builder() {
 		return new LoopingMTSSourceBuilder();
 	}

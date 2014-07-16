@@ -19,36 +19,53 @@ public class Streamer {
 
 	private ArrayBlockingQueue<MTSPacket> buffer;
 	private int bufferSize;
-	private boolean endOfStream;
+	private boolean endOfSourceReached;
+	private boolean streamingShouldStop;
 
 	private PATSection patSection;
 	private TreeMap<Integer,PMTSection> pmtSection = Maps.newTreeMap();
+
+	private Thread bufferingThread;
+	private Thread streamingThread;
 
 	private Streamer(MTSSource source, MTSSink sink, int bufferSize) {
 		this.source = source;
 		this.sink = sink;
 		this.bufferSize = bufferSize;
 		buffer = new ArrayBlockingQueue<>(bufferSize);
-		endOfStream = false;
 		patSection = null;
+		endOfSourceReached = false;
+		streamingShouldStop = false;
 	}
 
-
-	private int getPCRPid() {
-		if ((!pmtSection.isEmpty())) {
-			return pmtSection.values().iterator().next().getPcrPid();
-		}
-		return -1;
-	}
 
 	public void stream() throws Exception {
-
 		log.info("PreBuffering {} packets", bufferSize);
-		fillBuffer();
+		preBuffer();
 		log.info("Done PreBuffering");
 
-		new Thread(new ReadThread()).start();
+		bufferingThread = new Thread(this::fillBuffer);
+		bufferingThread.setDaemon(true);
+		bufferingThread.start();
 
+		streamingThread = new Thread(this::internalStream);
+		streamingThread.setDaemon(true);
+		streamingThread.start();
+	}
+
+	public void stop() {
+		streamingShouldStop = true;
+		buffer.clear();
+		try {
+			bufferingThread.join();
+			streamingThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		buffer.clear();
+	}
+
+	private void internalStream() {
 		boolean resetState = false;
 
 		Integer pcrPid = null;
@@ -64,8 +81,7 @@ public class Streamer {
 		Long lastPcrTime = null;
 		//Long lastPcrPacketCount = null;
 		Long averageSleep = null;
-		while (true) {
-
+		while (!streamingShouldStop) {
 			if (resetState) {
 				pcrCount = 0;
 				firstPcrValue = null;
@@ -82,7 +98,7 @@ public class Streamer {
 			packet = buffer.poll();
 
 			if (packet == null) {
-				if (endOfStream) {
+				if (endOfSourceReached) {
 					packet = buffer.poll();
 					if (packet == null) {
 						break;
@@ -194,29 +210,63 @@ public class Streamer {
 
 			// Sleep if needed
 			if (sleepNanos > 0) {
-				log.info("Sleeping " + sleepNanos / 1000000 + " millis, " + sleepNanos % 1000000 + " nanos");
-				log.info("buffer size = {}", buffer.size());
-				Thread.sleep(sleepNanos / 1000000, (int) (sleepNanos % 1000000));
+				log.trace("Sleeping " + sleepNanos / 1000000 + " millis, " + sleepNanos % 1000000 + " nanos");
+				try {
+					Thread.sleep(sleepNanos / 1000000, (int) (sleepNanos % 1000000));
+				} catch (InterruptedException e) {
+					log.warn("Streaming sleep interrupted!");
+				}
 			}
 
 			// Stream packet
 			// System.out.println("Streaming packet #" + packetCount + ", PID=" + mtsPacket.getPid() + ", pcrCount=" + pcrCount + ", continuityCounter=" + mtsPacket.getContinuityCounter());
 
-			sink.send(packet);
+			try {
+				sink.send(packet);
+			} catch (Exception e) {
+				log.error("Error sending packet to sink", e);
+			}
 
 			packetCount++;
 		}
 		System.out.println("Sent " + packetCount + " MPEG-TS packets");
-
 	}
 
-	private void fillBuffer() throws Exception {
+	private void preBuffer() throws Exception {
 		MTSPacket packet;
 		int packetNumber = 0;
 		while ((packetNumber < bufferSize) && (packet = source.nextPacket()) != null) {
 			buffer.add(packet);
 			packetNumber++;
 		}
+	}
+
+	private void fillBuffer() {
+		try {
+			MTSPacket packet;
+			while (!streamingShouldStop && (packet = source.nextPacket()) != null) {
+				boolean put = false;
+				while (!put) {
+					try {
+						buffer.put(packet);
+						put = true;
+					} catch (InterruptedException e) {
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Error reading from source", e);
+		} finally {
+			endOfSourceReached = true;
+		}
+	}
+
+	private int getPCRPid() {
+		if ((!pmtSection.isEmpty())) {
+			return pmtSection.values().iterator().next().getPcrPid();
+		}
+		return -1;
 	}
 
 	public static StreamerBuilder builder() {
@@ -250,28 +300,6 @@ public class Streamer {
 		}
 	}
 
-	private class ReadThread implements Runnable {
 
-		@Override
-		public void run() {
-			try {
-				MTSPacket packet;
-				while ((packet = source.nextPacket()) != null) {
-					boolean put = false;
-					while (!put) {
-						try {
-							buffer.put(packet);
-							put = true;
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} catch (Exception e) {
-				log.error("Error reading from source", e);
-			} finally {
-				endOfStream = true;
-			}
-		}
-	}
+
 }
