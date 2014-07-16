@@ -21,7 +21,7 @@ public class MultiMTSSource implements MTSSource {
 	protected MultiMTSSource(boolean fixContinuity, int maxloops, Collection<MTSSource> sources) {
 		Preconditions.checkArgument(sources.size() > 0, "Multisource must at least contain one source");
 		Preconditions.checkArgument(maxloops != 0, "Cannot loop zero times");
-		this.sources = Lists.newLinkedList(sources);
+		this.sources = Lists.newArrayList(sources);
 		this.fixContinuity = fixContinuity;
 		idx = 0;
 		currentSource = this.sources.get(0);
@@ -30,16 +30,25 @@ public class MultiMTSSource implements MTSSource {
 		}
 		this.maxLoops = maxloops;
 		if (maxloops != 1) {
-			checkLoopingPossible();
+			checkLoopingPossible(sources);
 		}
 		this.currentLoop = 1;
 	}
 
-	private void checkLoopingPossible() {
+	public void addSource(MTSSource source) {
+		checkLoopingPossible(source);
+
+	}
+
+	private void checkLoopingPossible(Collection<MTSSource> sources) {
 		for (MTSSource source : sources) {
-			if (!(source instanceof ResettableMTSSource)) {
-				throw new IllegalStateException("Sources must be resettable for looping");
-			}
+			checkLoopingPossible(source);
+		}
+	}
+
+	private void checkLoopingPossible(MTSSource source) {
+		if (!(source instanceof ResettableMTSSource)) {
+			throw new IllegalStateException("Sources must be resettable for looping");
 		}
 	}
 

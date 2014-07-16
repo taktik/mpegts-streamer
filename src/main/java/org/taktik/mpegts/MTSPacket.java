@@ -378,7 +378,7 @@ public class MTSPacket extends PacketSupport {
 	protected void parse() {
 		// Sync byte
 		int marker = buffer.get() & 0xff;
-		Preconditions.checkArgument(0x47 == marker);
+		Preconditions.checkArgument(Constants.TS_MARKER == marker);
 
 		// Second/Third byte
 		int secondAndThirdBytes = buffer.getShort();

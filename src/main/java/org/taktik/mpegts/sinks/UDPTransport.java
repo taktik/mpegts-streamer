@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 
+import com.google.common.base.Preconditions;
 import org.taktik.mpegts.MTSPacket;
 
 public class UDPTransport implements MTSSink {
@@ -24,13 +25,13 @@ public class UDPTransport implements MTSSink {
 		multicastSocket.setReuseAddress(true);
 		multicastSocket.setSoTimeout(soTimeout);
 		multicastSocket.setTimeToLive(ttl);
-
 	}
 
 	@Override
 	public void send(MTSPacket packet) throws IOException {
 		ByteBuffer buffer = packet.getBuffer();
-		DatagramPacket datagramPacket = new DatagramPacket(buffer.array(), buffer.capacity(), inetSocketAddress);
+		Preconditions.checkArgument(buffer.hasArray());
+		DatagramPacket datagramPacket = new DatagramPacket(buffer.array(),buffer.arrayOffset(), buffer.limit(), inetSocketAddress);
 		multicastSocket.send(datagramPacket);
 	}
 
