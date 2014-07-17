@@ -35,13 +35,17 @@ public class Streamer {
 	}
 
 
-	public void stream() throws Exception {
+	public void stream() {
 		buffer = new ArrayBlockingQueue<>(bufferSize);
 		patSection = null;
 		endOfSourceReached = false;
 		streamingShouldStop = false;
 		log.info("PreBuffering {} packets", bufferSize);
-		preBuffer();
+		try {
+			preBuffer();
+		} catch (Exception e) {
+			throw new IllegalStateException("Error while bufering", e);
+		}
 		log.info("Done PreBuffering");
 
 		bufferingThread = new Thread(this::fillBuffer, "buffering");
