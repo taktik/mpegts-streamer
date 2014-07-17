@@ -32,14 +32,14 @@ public class Streamer {
 		this.source = source;
 		this.sink = sink;
 		this.bufferSize = bufferSize;
-		buffer = new ArrayBlockingQueue<>(bufferSize);
-		patSection = null;
-		endOfSourceReached = false;
-		streamingShouldStop = false;
 	}
 
 
 	public void stream() throws Exception {
+		buffer = new ArrayBlockingQueue<>(bufferSize);
+		patSection = null;
+		endOfSourceReached = false;
+		streamingShouldStop = false;
 		log.info("PreBuffering {} packets", bufferSize);
 		preBuffer();
 		log.info("Done PreBuffering");
@@ -62,14 +62,12 @@ public class Streamer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		buffer.clear();
+		buffer = null;
+		bufferingThread = streamingThread = null;
 	}
 
 	private void internalStream() {
 		boolean resetState = false;
-
-		Integer pcrPid = null;
-
 		MTSPacket packet;
 		long packetCount = 0;
 		long pcrCount = 0;
@@ -187,7 +185,7 @@ public class Streamer {
 							if (sleepNanosPrevious != null) {
 								// Safety : We should never have to wait more than 100ms
 								if (sleepNanosPrevious > 100000000) {
-									System.err.println("PCR sleep ignored, too high !");
+									log.warn("PCR sleep ignored, too high !");
 									resetState = true;
 								} else {
 									sleepNanos = sleepNanosPrevious;
@@ -200,10 +198,10 @@ public class Streamer {
 							lastPcrTime = pcrTime + sleepNanos;
 							//lastPcrPacketCount = pcrPidPacketCount;
 						} else {
-							System.err.println("Skipped PCR - Discontinuity indicator");
+							log.warn("Skipped PCR - Discontinuity indicator");
 						}
 					} else {
-						System.err.println("Skipped PCR - PID does not match");
+						log.debug("Skipped PCR - PID does not match");
 					}
 				}
 			}
@@ -229,7 +227,7 @@ public class Streamer {
 
 			packetCount++;
 		}
-		System.out.println("Sent " + packetCount + " MPEG-TS packets");
+		log.info("Sent {} MPEG-TS packets", packetCount);
 	}
 
 	private void preBuffer() throws Exception {
@@ -250,7 +248,7 @@ public class Streamer {
 					try {
 						buffer.put(packet);
 						put = true;
-					} catch (InterruptedException e) {
+					} catch (InterruptedException ignored) {
 
 					}
 				}
@@ -264,6 +262,7 @@ public class Streamer {
 
 	private int getPCRPid() {
 		if ((!pmtSection.isEmpty())) {
+			// TODO change this
 			return pmtSection.values().iterator().next().getPcrPid();
 		}
 		return -1;

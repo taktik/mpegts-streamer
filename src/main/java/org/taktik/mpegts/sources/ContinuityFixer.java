@@ -6,6 +6,21 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import org.taktik.mpegts.MTSPacket;
 
+
+/**
+ * This class will attempt to fix timestamp discontinuities
+ * when switching from one source to another.
+ * This should allow for smoother transitions between videos.<br>
+ * This class does 3 things:
+ * <ol>
+ * <li> Rewrite the PCR to be continuous with the previous source</li>
+ * <li> Rewrite the PTS of the PES to be continuous with the previous source</li>
+ * <li> Rewrite the continuity counter to be continuous with the previous source</li>
+ * </ol>
+ *
+ * Code using this class should call {@link #fixContinuity(org.taktik.mpegts.MTSPacket)} for each source packet,
+ * then {@link #nextSource()} after the last packet of the current source and before the first packet of the next source.
+ */
 public class ContinuityFixer {
 	private Map<Integer, MTSPacket> pcrPackets;
 	private Map<Integer, MTSPacket> allPackets;
@@ -37,6 +52,12 @@ public class ContinuityFixer {
 		firstSource = true;
 	}
 
+	/**
+	 * Signals the {@link org.taktik.mpegts.sources.ContinuityFixer} that the following
+	 * packet will be from another source.
+	 *
+	 * Call this method after the last packet of the current source and before the first packet of the next source.
+	 */
 	public void nextSource() {
 		firstPCRsOfCurrentSource.clear();
 		lastPCRsOfPreviousSource.clear();
@@ -55,6 +76,13 @@ public class ContinuityFixer {
 		firstSource = false;
 	}
 
+	/**
+	 * Fix the continuity of the packet.
+	 *
+	 * Call this method for each source packet, in order.
+	 *
+	 * @param tsPacket The packet to fix.
+	 */
 	public void fixContinuity(MTSPacket tsPacket) {
 		int pid = tsPacket.getPid();
 		allPackets.put(pid, tsPacket);
