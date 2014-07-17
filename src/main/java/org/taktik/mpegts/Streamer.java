@@ -23,7 +23,7 @@ public class Streamer {
 	private boolean streamingShouldStop;
 
 	private PATSection patSection;
-	private TreeMap<Integer,PMTSection> pmtSection = Maps.newTreeMap();
+	private TreeMap<Integer,PMTSection> pmtSection;
 
 	private Thread bufferingThread;
 	private Thread streamingThread;
@@ -38,6 +38,7 @@ public class Streamer {
 	public void stream() {
 		buffer = new ArrayBlockingQueue<>(bufferSize);
 		patSection = null;
+		pmtSection = Maps.newTreeMap();
 		endOfSourceReached = false;
 		streamingShouldStop = false;
 		log.info("PreBuffering {} packets", bufferSize);
