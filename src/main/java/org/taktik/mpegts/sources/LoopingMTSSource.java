@@ -5,7 +5,7 @@ import org.taktik.mpegts.MTSPacket;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class LoopingMTSSource implements MTSSource{
+public class LoopingMTSSource extends AbstractMTSSource{
 	private ResettableMTSSource source;
 	private boolean fixContinuity;
 	private Integer maxLoops;
@@ -19,7 +19,7 @@ public class LoopingMTSSource implements MTSSource{
 	}
 
 	@Override
-	public MTSPacket nextPacket() throws Exception {
+	protected MTSPacket nextPacketInternal() throws Exception {
 		MTSPacket packet = source.nextPacket();
 		if (packet == null) {
 			currentLoop++;
@@ -32,7 +32,7 @@ public class LoopingMTSSource implements MTSSource{
 	}
 
 	@Override
-	public void close() throws Exception {
+	protected void closeInternal() throws Exception {
 		source.close();
 	}
 

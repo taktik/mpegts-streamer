@@ -11,7 +11,7 @@ import org.taktik.ioutils.NIOUtils;
 import org.taktik.mpegts.Constants;
 import org.taktik.mpegts.MTSPacket;
 
-public class SeekableByteChannelMTSSource implements ResettableMTSSource {
+public class SeekableByteChannelMTSSource  extends AbstractMTSSource implements ResettableMTSSource {
 	static final Logger log = LoggerFactory.getLogger("source");
 
 	private static final int BUFFER_SIZE = Constants.MPEGTS_PACKET_SIZE * 1000;
@@ -35,7 +35,7 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 	}
 
 	@Override
-	public MTSPacket nextPacket() throws IOException {
+	protected MTSPacket nextPacketInternal() throws IOException {
 		ByteBuffer packetBuffer = null;
 		while (true) {
 			boolean foundFirstMarker = false;
@@ -106,7 +106,7 @@ public class SeekableByteChannelMTSSource implements ResettableMTSSource {
 	}
 
 	@Override
-	public void close() throws Exception {
+	protected void closeInternal() throws Exception {
 		byteChannel.close();
 	}
 

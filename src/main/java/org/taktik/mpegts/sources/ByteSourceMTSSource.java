@@ -1,6 +1,5 @@
 package org.taktik.mpegts.sources;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
@@ -9,7 +8,7 @@ import com.google.common.io.ByteSource;
 import org.taktik.mpegts.Constants;
 import org.taktik.mpegts.MTSPacket;
 
-public class ByteSourceMTSSource implements ResettableMTSSource {
+public class ByteSourceMTSSource extends AbstractMTSSource implements ResettableMTSSource {
 
 	private ByteSource byteSource;
 
@@ -31,7 +30,7 @@ public class ByteSourceMTSSource implements ResettableMTSSource {
 	}
 
 	@Override
-	public MTSPacket nextPacket() throws Exception {
+	protected MTSPacket nextPacketInternal() throws Exception {
 		if (stream == null) {
 			stream = byteSource.openBufferedStream();
 		}
@@ -47,7 +46,7 @@ public class ByteSourceMTSSource implements ResettableMTSSource {
 	}
 
 	@Override
-	public void close() throws Exception {
+	protected void closeInternal() throws Exception {
 		if (stream != null) {
 			try (InputStream ignored = stream){
 				//close

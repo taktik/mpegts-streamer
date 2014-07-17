@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.taktik.mpegts.MTSPacket;
 
-public class MultiMTSSource implements MTSSource {
+public class MultiMTSSource extends AbstractMTSSource {
 	static final Logger log = LoggerFactory.getLogger("multisource");
 	private List<MTSSource> sources;
 	private MTSSource currentSource;
@@ -52,7 +52,7 @@ public class MultiMTSSource implements MTSSource {
 	}
 
 	@Override
-	public MTSPacket nextPacket() throws Exception {
+	protected MTSPacket nextPacketInternal() throws Exception {
 		if (currentSource == null) {
 			return null;
 		}
@@ -88,7 +88,7 @@ public class MultiMTSSource implements MTSSource {
 	}
 
 	@Override
-	public synchronized void close() throws Exception {
+	protected synchronized void closeInternal() throws Exception {
 		for (MTSSource source : sources) {
 			source.close();
 		}

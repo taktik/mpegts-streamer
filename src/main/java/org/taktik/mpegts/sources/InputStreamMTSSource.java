@@ -8,7 +8,7 @@ import com.google.common.base.Preconditions;
 import org.taktik.mpegts.Constants;
 import org.taktik.mpegts.MTSPacket;
 
-public class InputStreamMTSSource implements MTSSource {
+public class InputStreamMTSSource extends AbstractMTSSource {
 
 	private InputStream inputStream;
 
@@ -17,7 +17,7 @@ public class InputStreamMTSSource implements MTSSource {
 	}
 
 	@Override
-	public MTSPacket nextPacket() throws IOException {
+	protected MTSPacket nextPacketInternal() throws IOException {
 		byte[] barray = new byte[Constants.MPEGTS_PACKET_SIZE];
 		if (inputStream.read(barray) != Constants.MPEGTS_PACKET_SIZE) {
 			inputStream.close();
@@ -29,8 +29,10 @@ public class InputStreamMTSSource implements MTSSource {
 	}
 
 	@Override
-	public void close() throws Exception {
-		inputStream.close();
+	protected void closeInternal() throws Exception {
+		try (InputStream toClose = inputStream) {
+		}
+		inputStream = null;
 	}
 
 	public static InputStreamMTSSourceBuilder builder() {
