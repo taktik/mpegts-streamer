@@ -31,8 +31,12 @@ public class UDPTransport implements MTSSink {
 	public void send(MTSPacket packet) throws IOException {
 		ByteBuffer buffer = packet.getBuffer();
 		Preconditions.checkArgument(buffer.hasArray());
-		DatagramPacket datagramPacket = new DatagramPacket(buffer.array(),buffer.arrayOffset(), buffer.limit(), inetSocketAddress);
+		DatagramPacket datagramPacket = new DatagramPacket(buffer.array(), buffer.arrayOffset(), buffer.limit(), inetSocketAddress);
 		multicastSocket.send(datagramPacket);
+	}
+
+	public void close() {
+		multicastSocket.close();
 	}
 
 	public static UDPTransport.UDPTransportBuilder builder() {
