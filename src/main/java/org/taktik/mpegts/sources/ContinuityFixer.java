@@ -129,7 +129,7 @@ public class ContinuityFixer {
 						firstPTSsOfCurrentSource.put(pid, pts);
 					}
 					if (!firstSource) {
-						long newPts = Math.round(pts + (getTimeGap(pid) / 300.0) + 100 * ((27000000 / 300.0) / 1000));
+						long newPts = Math.round(pts + (getTimeGap(pid) / 300.0) + 100 * ((27_000_000 / 300.0) / 1_000));
 
 						payload.put(9, (byte) (0x20 | ((newPts & 0x1C0000000l) >> 29) | 0x1));
 						payload.putShort(10, (short) (0x1 | ((newPts & 0x3FFF8000) >> 14)));
@@ -202,7 +202,7 @@ public class ContinuityFixer {
 		}
 		long timeGap = getTimeGap(tsPacket.getPid());
 		long pcr = tsPacket.getAdaptationField().getPcr().getValue();
-		long newPcr = pcr + timeGap + 100 * ((27000000) / 1000);
+		long newPcr = pcr + timeGap + 100 * ((27_000_000) / 1_000);
 		tsPacket.getAdaptationField().getPcr().setValue(newPcr);
 	}
 }
