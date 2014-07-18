@@ -34,7 +34,6 @@ public class Streamer {
 		this.bufferSize = bufferSize;
 	}
 
-
 	public void stream() {
 		buffer = new ArrayBlockingQueue<>(bufferSize);
 		patSection = null;
@@ -50,11 +49,9 @@ public class Streamer {
 		log.info("Done PreBuffering");
 
 		bufferingThread = new Thread(this::fillBuffer, "buffering");
-		bufferingThread.setDaemon(true);
 		bufferingThread.start();
 
 		streamingThread = new Thread(this::internalStream, "streaming");
-		streamingThread.setDaemon(true);
 		streamingThread.start();
 	}
 
@@ -303,7 +300,4 @@ public class Streamer {
 			return new Streamer(source, sink, bufferSize);
 		}
 	}
-
-
-
 }
