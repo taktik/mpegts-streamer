@@ -123,6 +123,7 @@ public class ContinuityFixer {
 				int extension = payload.getShort(6) & 0xffff;
 				if ((extension & 0x80) != 0) {
 					// PTS is present
+					// TODO add payload size check to avoid indexoutofboundexception
 					long pts = (((payload.get(9) & 0xE)) << 29) | (((payload.getShort(10) & 0xFFFE)) << 14) | ((payload.getShort(12) & 0xFFFE) >> 1);
 					if (!firstPTSsOfCurrentSource.containsKey(pid)) {
 						firstPTSsOfCurrentSource.put(pid, pts);
