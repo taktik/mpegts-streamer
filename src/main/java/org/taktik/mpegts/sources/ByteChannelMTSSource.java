@@ -9,30 +9,10 @@ import org.taktik.ioutils.NIOUtils;
 import org.taktik.mpegts.Constants;
 import org.taktik.mpegts.MTSPacket;
 
-public class ByteChannelMTSSource extends AbstractMTSSource {
-
-	private ByteChannel byteChannel;
+public class ByteChannelMTSSource extends AbstractByteChannelMTSSource<ByteChannel> {
 
 	private ByteChannelMTSSource(ByteChannel byteChannel) throws IOException {
-		this.byteChannel = byteChannel;
-	}
-
-	@Override
-	protected MTSPacket nextPacketInternal() throws IOException {
-		// Get next packet
-		ByteBuffer buffer = ByteBuffer.allocate(Constants.MPEGTS_PACKET_SIZE);
-		if (NIOUtils.read(byteChannel, buffer) != Constants.MPEGTS_PACKET_SIZE) {
-			return null;
-		}
-		buffer.flip();
-
-		// Parse the packet
-		return new MTSPacket(buffer);
-	}
-
-	@Override
-	protected void closeInternal() throws IOException {
-		byteChannel.close();
+		super(byteChannel);
 	}
 
 	public static ByteChannelMTSSourceBuilder builder() {
